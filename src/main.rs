@@ -4,7 +4,7 @@ use clap::{Parser, Subcommand};
 #[command(version, about, long_about = None)]
 struct Cli {
     #[command(subcommand)]
-    commadn: Commands,
+    commands: Commands,
 }
 
 
@@ -18,7 +18,7 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
 
-    match cli.commadn {
+    match cli.commands {
         Commands::Start {} => println!("Starting..."),
         Commands::Stop {} => println!("Stopping..."),
         Commands::Status {} => println!("Status: Running"),
