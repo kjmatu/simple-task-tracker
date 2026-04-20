@@ -10,7 +10,7 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    Start {},
+    Start { task_id: u8 },
     Stop {},
     Status {},
 }
@@ -19,7 +19,7 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.commands {
-        Commands::Start {} => println!("Starting..."),
+        Commands::Start { task_id} => println!("Starting... {}", task_id),
         Commands::Stop {} => println!("Stopping..."),
         Commands::Status {} => println!("Status: Running"),
     }
