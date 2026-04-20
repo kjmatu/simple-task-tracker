@@ -13,6 +13,7 @@ enum Commands {
     Start { task_id: u8 },
     Stop {},
     Status {},
+    List {},
 }
 
 fn main() {
@@ -22,5 +23,6 @@ fn main() {
         Commands::Start { task_id} => println!("Starting... {}", task_id),
         Commands::Stop {} => println!("Stopping..."),
         Commands::Status {} => println!("Status: Running"),
+        Commands::List {} => println!("Show Task list")
     }
 }
