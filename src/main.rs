@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+mod subcommands;
+
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {
@@ -20,9 +22,9 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.commands {
-        Commands::Start { task_id} => println!("Starting... {}", task_id),
-        Commands::Stop {} => println!("Stopping..."),
-        Commands::Status {} => println!("Status: Running"),
-        Commands::List {} => println!("Show Task list")
+        Commands::Start { task_id} => subcommands::start(task_id),
+        Commands::Stop {} => subcommands::stop(),
+        Commands::Status {} => subcommands::status(),
+        Commands::List {} => subcommands::list()
     }
 }
