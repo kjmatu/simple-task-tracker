@@ -1,9 +1,9 @@
-extern crate toml;
 extern crate serde;
+extern crate toml;
 
-use serde::{Serialize, Deserialize};
-use std::path::{PathBuf};
+use serde::{Deserialize, Serialize};
 use std::env;
+use std::path::PathBuf;
 
 pub fn start(task_id: u8) {
     println!("Starting {}", task_id);
@@ -16,7 +16,6 @@ pub fn stop() {
 pub fn status() {
     println!("Status running");
 }
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Task {
@@ -35,16 +34,36 @@ fn resolve_task_file_path() -> PathBuf {
     }
 
     let home = env::var("HOME").expect("Could not find HOME environment variable");
-    PathBuf::from(home).join(".config").join("simple-task-tracker").join("tasks.toml")
+    PathBuf::from(home)
+        .join(".config")
+        .join("simple-task-tracker")
+        .join("tasks.toml")
 }
-
 
 pub fn list() {
     let task_file_path = resolve_task_file_path();
     println!("Reading tasks from {}", task_file_path.display());
 
-    let contents = std::fs::read_to_string(task_file_path).unwrap();
-    let tasks_file: TasksFile = toml::from_str(&contents).expect("Could not parse tasks file");
+    let contents = match std::fs::read_to_string(&task_file_path) {
+        Ok(contents) => contents,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+            eprintln!("Error: Task file not found at {}", task_file_path.display());
+            eprintln!("Create the file first, or set the STT_TASK_FILE environment variable.");
+            std::process::exit(1);
+        }
+        Err(e) => {
+            eprintln!("Error reading task file: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    let tasks_file = match toml::from_str::<TasksFile>(&contents) {
+        Ok(file) => file,
+        Err(e) => {
+            eprintln!("Error parsing task file: {}", e);
+            std::process::exit(1);
+        }
+    };
 
     for task in tasks_file.tasks {
         println!("{}: {}", task.id, task.name);

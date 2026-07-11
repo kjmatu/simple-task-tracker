@@ -9,7 +9,6 @@ struct Cli {
     commands: Commands,
 }
 
-
 #[derive(Subcommand, Debug)]
 enum Commands {
     Start { task_id: u8 },
@@ -22,9 +21,9 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.commands {
-        Commands::Start { task_id} => subcommands::start(task_id),
+        Commands::Start { task_id } => subcommands::start(task_id),
         Commands::Stop {} => subcommands::stop(),
         Commands::Status {} => subcommands::status(),
-        Commands::List {} => subcommands::list()
+        Commands::List {} => subcommands::list(),
     }
 }
