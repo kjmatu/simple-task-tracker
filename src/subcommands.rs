@@ -69,3 +69,25 @@ pub fn list() {
         println!("{}: {}", task.id, task.name);
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    mod resolve_task_file_path {
+        use std::env;
+        use std::path::PathBuf;
+
+        #[test]
+        fn check_resolved_task_file_path_existence() {
+            const PROJECT_ROOT: &str = env!("CARGO_MANIFEST_DIR");
+            let task_toml = PathBuf::from(PROJECT_ROOT).join("tests").join("fixture").join("task.toml");
+            unsafe {
+                env::set_var("STT_TASK_FILE", task_toml.to_str());
+            }
+            let task_file_path = resolve_task_file_path();
+            assert!(task_file_path.exists(), "タスクファイルが存在しません: {}", task_file_path.display())
+        }
+    }
+}
